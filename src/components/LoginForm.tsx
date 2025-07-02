@@ -17,11 +17,12 @@ export default function LoginForm() {
 
     if (!email || !password) {
         setError('Email and password are required.');
+        return;
     }
 
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })

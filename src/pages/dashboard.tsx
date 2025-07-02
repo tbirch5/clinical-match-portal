@@ -1,29 +1,24 @@
 
 'use client'
 import { useEffect, useState } from 'react'
+import { mockTrials } from '../utils/mockData'
+import { useUser } from '@/hooks/useUser'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
-import { mockTrials } from '../utils/mockData'
+
 
 export default function Dashboard() {
-  const [user, setUser] = useState<any>(null)
+  const { user, loading } = useUser()
   const [trials, setTrials] = useState<any[]>([])
   const [error, setError] = useState('')
   const router = useRouter()
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data, error } = await supabase.auth.getUser()
-      if (error || !data?.user) {
-        router.push('/login')
-      } else {
-        setUser(data.user)
-        fetchTrials()
-      }
-    }
 
-    fetchUser()
-  }, [])
+  useEffect(() => {
+    if (!loading && user) {
+        fetchTrials()
+    }
+  }, [loading, user])
 
   const fetchTrials = async () => {
     try {
@@ -35,9 +30,19 @@ export default function Dashboard() {
     }
   }
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
+
+  if (loading) {
+        return <div className="p-6 text-gray-600">Loading...</div>
+    }
+
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-4">Welcome to the Dashboard</h1>
+      {user && <p className="mb-4 text-gray-600">Logged in as {user.email}</p>}
       {error && <p className="text-red-500">{error}</p>}
       <ul className="space-y-4">
         {trials.map((trial) => (
@@ -48,6 +53,10 @@ export default function Dashboard() {
           </li>
         ))}
       </ul>
+      <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded mb-6">
+        Logout
+    </button>
     </div>
   )
 }
+
