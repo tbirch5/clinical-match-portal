@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
-import { Fascinate } from 'next/font/google';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -22,7 +21,7 @@ export default function LoginForm() {
 
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
