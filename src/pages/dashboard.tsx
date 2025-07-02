@@ -6,10 +6,16 @@ import { useUser } from '@/hooks/useUser'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
 
+type Trial = {
+  id: string,
+  title: string,
+  location: string,
+  status: string,
+}
 
 export default function Dashboard() {
   const { user, loading } = useUser()
-  const [trials, setTrials] = useState<any[]>([])
+  const [trials, setTrials] = useState<Trial[]>([])
   const [error, setError] = useState('')
   const router = useRouter()
 
@@ -23,9 +29,10 @@ export default function Dashboard() {
   const fetchTrials = async () => {
     try {
       // Simulate API call
-      await new Promise((r) => setTimeout(r, 500)) // delay
+      await new Promise((r) => setTimeout(r, 500)) // simulate API call delay
       setTrials(mockTrials)
-    } catch (e: any) {
+    } catch (e) {
+      console.error('Error fetching trials:', e)
       setError('Failed to fetch trials.')
     }
   }

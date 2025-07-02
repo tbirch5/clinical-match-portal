@@ -1,11 +1,11 @@
 'use client'
-
+import { User } from '@supabase/supabase-js'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
 
 export const useUser = () => {
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
@@ -23,7 +23,7 @@ export const useUser = () => {
     }
 
     getSession()
-  }, [])
+  }, [router])
 
   return { user, loading }
 }
